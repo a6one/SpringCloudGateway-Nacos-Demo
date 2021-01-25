@@ -42,7 +42,7 @@ public class NacosRouteDefinitionRepository extends AbstractRouteDefinitionRepos
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
         try {
-            //加载动态配置
+            //加载动态配置 路由信息
             NacosConfigManager nacosConfigManager = new NacosConfigManager(nacosConfigProperties);
             String content = nacosConfigManager.getConfigService().getConfig(DYNAMIC_ROUTE_DATA_ID, DYNAMIC_ROUTE_GROUP_ID, 3000);
             if(StringUtils.isNotBlank(content)){

@@ -35,6 +35,45 @@ public class CModifyRequestGatewayFilterFactory extends AbstractGatewayFilterFac
         this.messageReaders = HandlerStrategies.withDefaults().messageReaders();
     }
 
+    /**
+     * ServerWebExchangeUtils --> gateway提供的
+     *
+     * ServerRequest          --> webflux提供的
+     * ServerResponse         --> webflux提供的
+     * BodyInserters          --> webflux提供的
+     *
+     *
+     * RouterFunction
+     * RouterFunctions
+     * RouterFunctionBuilder
+     *
+     * HandlerFunction
+     * HandlerFilterFunction
+     * EntityResponse
+     *
+     * DefaultServerRequestBuilder
+     * DefaultServerResponseBuilder
+     *
+     * ReactiveHttpInputMessage
+     * ReactiveHttpOutputMessage
+     *
+     *
+     * AbstractRoutePredicateFactory
+     *
+     * RouteDefinitionRepository --> RouteDefinitionLocator | RouteDefinitionWriter
+     *
+     * RouteDefinition --> 该组件用来对 Route 信息进行定义，最终会被 RouteLocator 解析成 Route
+     * PredicateDefinition
+     * FilterDefinition
+     *
+     * RouteLocatorBuilder
+     *
+     * RouteDefinitionRouteLocator --> RouteLocator
+     *
+     *
+     * WebFilter
+     */
+
     @Override
     @SuppressWarnings("unchecked")
     public GatewayFilter apply(Object config) {
@@ -55,7 +94,7 @@ public class CModifyRequestGatewayFilterFactory extends AbstractGatewayFilterFac
             CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(exchange,
                     headers);
             return bodyInserter.insert(outputMessage, new BodyInserterContext())
-                    .then(Mono.defer(() -> {
+                    .then(Mono.defer(() -> {  // 延迟创建
                         ServerHttpRequest decorator = decorate(exchange, headers,
                                 outputMessage);
                         return chain.filter(exchange.mutate().request(decorator).build());
@@ -71,6 +110,7 @@ public class CModifyRequestGatewayFilterFactory extends AbstractGatewayFilterFac
     private BiFunction<ServerWebExchange,Mono<String>,Mono<String>> modifyBody(){
         return (exchange,json)-> {
             AtomicReference<String> result = new AtomicReference<>();
+            // 订阅了
             json.subscribe(
                     value -> {
                         //value 即为请求body，在此处修改

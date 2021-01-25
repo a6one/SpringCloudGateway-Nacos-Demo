@@ -15,6 +15,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <!-- 最新版本 -->
         <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
     </properties>
 
