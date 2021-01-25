@@ -10,12 +10,14 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
+
+
 /**
  * Created by chenws on 2019/11/1.
  * 鉴权过滤器
  */
-@Component
 @Slf4j
+@Component
 public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFactory {
 
     private final PathVerifyService pathVerifyService;
@@ -24,6 +26,7 @@ public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFac
         this.pathVerifyService = pathVerifyService;
     }
 
+    // 过滤器链模式
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
@@ -34,11 +37,10 @@ public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFac
             //判断是否需要拦截
             boolean shouldFilter = pathVerifyService.shouldFilter(path);
             if (!shouldFilter) {
-                return chain.filter(exchange);
+                return chain.filter(exchange); // 下一个拦截器
             }
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
             }));
         };
     }
-
 }

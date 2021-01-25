@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @date 2019/12/20 15:47:45
  */
 @Configuration
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE) //
 @ConditionalOnClass(WebFluxConfigurer.class)
 @AutoConfigureBefore(WebFluxAutoConfiguration.class)
 @EnableConfigurationProperties({ ServerProperties.class, ResourceProperties.class })
@@ -48,21 +48,29 @@ public class CustomErrorWebFluxAutoConfiguration {
 
     private final ServerCodecConfigurer serverCodecConfigurer;
 
-    public CustomErrorWebFluxAutoConfiguration(ServerProperties serverProperties, ResourceProperties resourceProperties,
-                                               ObjectProvider<ViewResolver> viewResolversProvider, ServerCodecConfigurer serverCodecConfigurer,
+    // 技巧1：利用Ioc容器扫描时候，会自动调用构造方法
+    public CustomErrorWebFluxAutoConfiguration(ServerProperties serverProperties, //springboot-autoconfigure --web中服务端配置
+                                               ResourceProperties resourceProperties, //springboot-autoconfigure --web中服务端配置
+                                               ObjectProvider<ViewResolver> viewResolversProvider,//webFlux中的视图解析器
+                                               ServerCodecConfigurer serverCodecConfigurer, //编解码器
                                                ApplicationContext applicationContext) {
         this.serverProperties = serverProperties;
         this.applicationContext = applicationContext;
         this.resourceProperties = resourceProperties;
+        // 技巧2：使用ObjectProvider.orderedStream(),获取所有的类型
+        // 返回符合条件对象的连续的Stream。在标注Spring应用上下文中采用@Order注解或实现Order接口的顺序
         this.viewResolvers = viewResolversProvider.orderedStream().collect(Collectors.toList());
+//        viewResolversProvider.orderedStream().forEachOrdered(); 顺序遍历
+
         this.serverCodecConfigurer = serverCodecConfigurer;
     }
 
     @Bean
+    // 只有当当前目录没有 ErrorWebExceptionHandler 类型的时候才加载
     @ConditionalOnMissingBean(value = ErrorWebExceptionHandler.class, search = SearchStrategy.CURRENT)
     @Order(-3)
     public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes) {
-        //注入自定义的handler
+        // 设置自定义的全局异常处理器
         CustomErrorWebExceptionHandler customErrorWebExceptionHandler = new CustomErrorWebExceptionHandler(
                 errorAttributes,
                 resourceProperties,

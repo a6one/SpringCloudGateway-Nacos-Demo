@@ -89,6 +89,25 @@
             <version>3.9</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>2.2.1.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId> <!--依赖于spring-web-->
+            <version>5.2.1.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId> <!--依赖于spring-web-->
+            <version>5.0.4.RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
