@@ -64,7 +64,7 @@ public class CModifyRequestGatewayFilterFactory extends AbstractGatewayFilterFac
      *
      * RouteDefinition --> 该组件用来对 Route 信息进行定义，最终会被 RouteLocator 解析成 Route
      * PredicateDefinition
-     * FilterDefinition
+     * FilterDefinition --> 定义了 Filter 的名称，符合特定的命名规范，为对应的工厂名GatewayFilterFactory前缀。
      *
      * RouteLocatorBuilder
      *
